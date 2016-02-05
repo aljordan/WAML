@@ -317,6 +317,25 @@ namespace WhisperingAudioMusicLibrary
         }
 
 
+        public Track GetSongById(long id)
+        {
+            SQLiteConnection dbConnection = new SQLiteConnection(sqlConnectionString);
+            Track result = null;
+            string sql = "select * from track where id = " + id;
+
+            dbConnection.Open();
+            SQLiteCommand command = new SQLiteCommand(sql, dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+                result = new Track((long)reader["id"], reader["title"].ToString(), reader["album_artist"].ToString(),
+                    reader["composer"].ToString(), reader["album"].ToString(), reader["genre"].ToString(),
+                    (short)((long)reader["track_number"]), (short)((long)reader["year"]),
+                    (short)((long)reader["disc"]), reader["file_path"].ToString());
+
+            dbConnection.Close();
+            return result;
+        }
+
         /// <summary>
         /// Looks updates library with newly added or removed music
         /// </summary>
